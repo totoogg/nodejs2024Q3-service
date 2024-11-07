@@ -4,9 +4,11 @@ import { readFile } from 'fs/promises';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
 
   try {
     const fileYaml = await readFile(
