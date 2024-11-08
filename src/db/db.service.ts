@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IAlbum, IArtist, ITrack, IUser } from './db.model';
+import { IAlbum, IArtist, IFavorites, ITrack, IUser } from './db.model';
 
 @Injectable()
 export class DbService {
@@ -7,6 +7,11 @@ export class DbService {
   private tracks: ITrack[] = [];
   private artists: IArtist[] = [];
   private albums: IAlbum[] = [];
+  private favorites: IFavorites = {
+    albums: [],
+    artists: [],
+    tracks: [],
+  };
 
   getUsers() {
     return Promise.resolve(this.users);
@@ -142,6 +147,64 @@ export class DbService {
 
   deleteAlbum(id: string) {
     this.albums = this.albums.filter((el) => el.id !== id);
+
+    return Promise.resolve(true);
+  }
+
+  getFavorites() {
+    return Promise.resolve(this.favorites);
+  }
+
+  addTrack(id: string) {
+    this.favorites.tracks.push(id);
+
+    return Promise.resolve(true);
+  }
+
+  checkTrack(id: string) {
+    const res = this.favorites.tracks.includes(id);
+
+    return Promise.resolve(res);
+  }
+
+  deleteFavoriteTrack(id: string) {
+    this.favorites.tracks = this.favorites.tracks.filter((el) => el !== id);
+
+    return Promise.resolve(true);
+  }
+
+  addAlbum(id: string) {
+    this.favorites.albums.push(id);
+
+    return Promise.resolve(true);
+  }
+
+  checkAlbum(id: string) {
+    const res = this.favorites.albums.includes(id);
+
+    return Promise.resolve(res);
+  }
+
+  deleteFavoriteAlbum(id: string) {
+    this.favorites.albums = this.favorites.albums.filter((el) => el !== id);
+
+    return Promise.resolve(true);
+  }
+
+  addArtist(id: string) {
+    this.favorites.artists.push(id);
+
+    return Promise.resolve(true);
+  }
+
+  checkArtist(id: string) {
+    const res = this.favorites.artists.includes(id);
+
+    return Promise.resolve(res);
+  }
+
+  deleteFavoriteArtist(id: string) {
+    this.favorites.artists = this.favorites.artists.filter((el) => el !== id);
 
     return Promise.resolve(true);
   }

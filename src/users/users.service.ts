@@ -24,11 +24,16 @@ export class UsersService {
 
   async getUserById(id: string) {
     const user = await this.db.getUserById(id);
-    const userClone = structuredClone(user);
 
-    delete userClone.password;
+    if (user) {
+      const userClone = structuredClone(user);
 
-    return userClone;
+      delete userClone.password;
+
+      return userClone;
+    }
+
+    return user;
   }
 
   async createUser(data: CreateUserDto) {
