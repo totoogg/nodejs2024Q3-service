@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { ITrack, IUser } from './db.model';
+import { IArtist, ITrack, IUser } from './db.model';
 
 @Injectable()
 export class DbService {
   private users: IUser[] = [];
   private tracks: ITrack[] = [];
+  private artists: IArtist[] = [];
 
   getUsers() {
     return Promise.resolve(this.users);
@@ -74,6 +75,39 @@ export class DbService {
 
   deleteTrack(id: string) {
     this.tracks = this.tracks.filter((el) => el.id !== id);
+
+    return Promise.resolve(true);
+  }
+
+  getArtists() {
+    return Promise.resolve(this.artists);
+  }
+
+  getArtistById(id: string) {
+    const artist = this.artists.find((el) => el.id === id);
+
+    return Promise.resolve(artist);
+  }
+
+  createArtist(artist: IArtist) {
+    this.artists.push(artist);
+
+    return Promise.resolve(artist);
+  }
+
+  updateArtist(id: string, data) {
+    const index = this.artists.findIndex((el) => el.id === id);
+    this.artists[index] = {
+      ...this.artists[index],
+      ...data,
+    };
+    const artist = this.artists.find((el) => el.id === id);
+
+    return Promise.resolve(artist);
+  }
+
+  deleteArtist(id: string) {
+    this.artists = this.artists.filter((el) => el.id !== id);
 
     return Promise.resolve(true);
   }

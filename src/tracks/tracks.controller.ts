@@ -37,7 +37,7 @@ export class TracksController {
     const track = await this.tracksService.getTrackById(id);
 
     if (!track) {
-      throw new HttpException(`User with id ${id} does not exist`, 404);
+      throw new HttpException(`Track with id ${id} does not exist`, 404);
     }
 
     return track;
