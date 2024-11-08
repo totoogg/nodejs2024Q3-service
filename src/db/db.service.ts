@@ -118,6 +118,26 @@ export class DbService {
     return Promise.resolve(true);
   }
 
+  deleteArtistFromTrack(id: string) {
+    this.tracks.forEach((el) => {
+      if (el.artistId === id) {
+        el.artistId = null;
+      }
+    });
+
+    return Promise.resolve(true);
+  }
+
+  deleteArtistFromAlbum(id: string) {
+    this.albums.forEach((el) => {
+      if (el.artistId === id) {
+        el.artistId = null;
+      }
+    });
+
+    return Promise.resolve(true);
+  }
+
   getAlbums() {
     return Promise.resolve(this.albums);
   }
@@ -147,6 +167,16 @@ export class DbService {
 
   deleteAlbum(id: string) {
     this.albums = this.albums.filter((el) => el.id !== id);
+
+    return Promise.resolve(true);
+  }
+
+  deleteAlbumFromTrack(id: string) {
+    this.tracks.forEach((el) => {
+      if (el.albumId === id) {
+        el.albumId = null;
+      }
+    });
 
     return Promise.resolve(true);
   }

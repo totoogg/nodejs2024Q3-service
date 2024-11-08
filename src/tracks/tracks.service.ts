@@ -61,6 +61,8 @@ export class TracksService {
     if (track) {
       const res = await this.db.deleteTrack(id);
 
+      await this.db.deleteFavoriteTrack(id);
+
       return res;
     }
 

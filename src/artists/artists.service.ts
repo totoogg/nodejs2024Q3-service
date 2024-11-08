@@ -57,6 +57,12 @@ export class ArtistsService {
     if (artist) {
       const res = await this.db.deleteArtist(id);
 
+      await this.db.deleteFavoriteArtist(id);
+
+      await this.db.deleteArtistFromTrack(id);
+
+      await this.db.deleteArtistFromAlbum(id);
+
       return res;
     }
 

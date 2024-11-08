@@ -59,6 +59,10 @@ export class AlbumsService {
     if (album) {
       const res = await this.db.deleteAlbum(id);
 
+      await this.db.deleteFavoriteAlbum(id);
+
+      await this.db.deleteAlbumFromTrack(id);
+
       return res;
     }
 
