@@ -11,14 +11,24 @@ export class UsersService {
 
   async getUsers() {
     const users = await this.db.getUsers();
+    const res = users.map((el) => {
+      const userClone = structuredClone(el);
 
-    return users;
+      delete userClone.password;
+
+      return userClone;
+    });
+
+    return res;
   }
 
   async getUserById(id: string) {
     const user = await this.db.getUserById(id);
+    const userClone = structuredClone(user);
 
-    return user;
+    delete userClone.password;
+
+    return userClone;
   }
 
   async createUser(data: CreateUserDto) {
@@ -36,8 +46,11 @@ export class UsersService {
         updatedAt: time,
       };
       const user = await this.db.createUser(userData);
+      const userClone = structuredClone(user);
 
-      return user;
+      delete userClone.password;
+
+      return userClone;
     }
 
     return null;
@@ -58,8 +71,11 @@ export class UsersService {
       };
 
       const user = await this.db.updateUser(id, updateData);
+      const userClone = structuredClone(user);
 
-      return user;
+      delete userClone.password;
+
+      return userClone;
     }
 
     return '404';
