@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { readFile } from 'fs/promises';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
-import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const PORT = Number(process.env.PORT) || 4000;
+
   app.useGlobalPipes(new ValidationPipe());
 
   try {
@@ -22,6 +25,6 @@ async function bootstrap() {
     console.error(error);
   }
 
-  await app.listen(4000);
+  await app.listen(PORT);
 }
 bootstrap();
