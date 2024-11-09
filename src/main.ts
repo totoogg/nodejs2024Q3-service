@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { readFile } from 'fs/promises';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
-import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import 'dotenv/config';
 
