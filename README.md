@@ -11,6 +11,18 @@
 git clone https://github.com/totoogg/nodejs2024Q3-service.git
 ```
 
+## Go to folder `nodejs2024Q3-service`
+
+```
+cd nodejs2024Q3-service
+```
+
+## Go to the `develop-rest-service-part-1` branch
+
+```
+git checkout develop-rest-service-part-1
+```
+
 ## Installing NPM modules
 
 ```
@@ -31,7 +43,8 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
+To run all tests
+ <!-- without authorization -->
 
 ```
 npm run test
@@ -43,7 +56,7 @@ To run only one of all test suites
 npm run test -- <path to suite>
 ```
 
-To run all test with authorization
+<!-- To run all test with authorization
 
 ```
 npm run test:auth
@@ -53,7 +66,7 @@ To run only specific test suite with authorization
 
 ```
 npm run test:auth -- <path to suite>
-```
+``` -->
 
 ### Auto-fix and format
 
