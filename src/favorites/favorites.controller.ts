@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
-import { IFavoritesResponse } from './entities/favorit.entities';
+import { IFavoritesResponse } from './entities/favorite.entities';
 import { FavoritesService } from './favorites.service';
 
 @Controller('favs')
