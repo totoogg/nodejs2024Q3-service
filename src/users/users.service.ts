@@ -12,11 +12,20 @@ export class UsersService {
   async getUsers() {
     const users = await this.prisma.user.findMany({
       select: {
-        password: false,
+        id: true,
+        login: true,
+        version: true,
+        updatedAt: true,
+        createdAt: true,
       },
     });
 
-    return users as IUser[];
+    return users.map((el) => ({
+      ...el,
+      version: Number(el.version),
+      createdAt: Number(el.createdAt),
+      updatedAt: Number(el.updatedAt),
+    }));
   }
 
   async getUserById(id: string) {
@@ -24,11 +33,20 @@ export class UsersService {
       const user = await this.prisma.user.findUnique({
         where: { id },
         select: {
-          password: false,
+          id: true,
+          login: true,
+          version: true,
+          updatedAt: true,
+          createdAt: true,
         },
       });
 
-      return user;
+      return {
+        ...user,
+        version: Number(user.version),
+        createdAt: Number(user.createdAt),
+        updatedAt: Number(user.updatedAt),
+      };
     } catch {
       return undefined;
     }
@@ -52,15 +70,26 @@ export class UsersService {
           updatedAt: time,
         };
 
-        return await this.prisma.user.create({
+        const res = await this.prisma.user.create({
           data: userData,
           select: {
-            password: false,
+            id: true,
+            login: true,
+            version: true,
+            updatedAt: true,
+            createdAt: true,
           },
         });
+
+        return {
+          ...res,
+          version: Number(res.version),
+          createdAt: Number(res.createdAt),
+          updatedAt: Number(res.updatedAt),
+        };
       }
 
-      return user;
+      return null;
     } catch {
       return undefined;
     }
@@ -77,19 +106,30 @@ export class UsersService {
           return '403';
         }
 
-        return await this.prisma.user.update({
+        const res = await this.prisma.user.update({
           where: {
             id,
           },
           data: {
             password: data.newPassword,
-            version: user.version + 1,
+            version: Number(user.version) + 1,
             updatedAt: new Date().getTime(),
           },
           select: {
-            password: false,
+            id: true,
+            login: true,
+            version: true,
+            updatedAt: true,
+            createdAt: true,
           },
         });
+
+        return {
+          ...res,
+          version: Number(res.version),
+          createdAt: Number(res.createdAt),
+          updatedAt: Number(res.updatedAt),
+        };
       }
 
       return '404';
@@ -105,6 +145,7 @@ export class UsersService {
           id,
         },
       });
+
       return user;
     } catch {
       return undefined;

@@ -49,6 +49,7 @@ export class ArtistsService {
           grammy: data.grammy,
         },
       });
+
       return artist;
     } catch {
       return undefined;
@@ -62,6 +63,31 @@ export class ArtistsService {
           id,
         },
       });
+
+      const artistFav = await this.prisma.favorites.findUnique({
+        where: {
+          id: 1,
+          AND: {
+            artists: {
+              has: id,
+            },
+          },
+        },
+      });
+
+      if (artistFav) {
+        await this.prisma.favorites.update({
+          where: {
+            id: 1,
+          },
+          data: {
+            artists: {
+              set: artistFav.artists.filter((el) => el !== id),
+            },
+          },
+        });
+      }
+
       return artist;
     } catch {
       return undefined;

@@ -104,16 +104,18 @@ export class FavoritesService {
         },
       });
 
-      await this.prisma.favorites.update({
-        where: {
-          id: 1,
-        },
-        data: {
-          tracks: {
-            set: track.tracks.filter((el) => el !== id),
+      if (track) {
+        await this.prisma.favorites.update({
+          where: {
+            id: 1,
           },
-        },
-      });
+          data: {
+            tracks: {
+              set: track.tracks.filter((el) => el !== id),
+            },
+          },
+        });
+      }
 
       return track;
     } catch {
@@ -161,16 +163,18 @@ export class FavoritesService {
         },
       });
 
-      await this.prisma.favorites.update({
-        where: {
-          id: 1,
-        },
-        data: {
-          albums: {
-            set: album.albums.filter((el) => el !== id),
+      if (album) {
+        await this.prisma.favorites.update({
+          where: {
+            id: 1,
           },
-        },
-      });
+          data: {
+            albums: {
+              set: album.albums.filter((el) => el !== id),
+            },
+          },
+        });
+      }
 
       return album;
     } catch {
@@ -218,16 +222,18 @@ export class FavoritesService {
         },
       });
 
-      await this.prisma.favorites.update({
-        where: {
-          id: 1,
-        },
-        data: {
-          artists: {
-            set: artist.artists.filter((el) => el !== id),
+      if (artist) {
+        await this.prisma.favorites.update({
+          where: {
+            id: 1,
           },
-        },
-      });
+          data: {
+            artists: {
+              set: artist.artists.filter((el) => el !== id),
+            },
+          },
+        });
+      }
 
       return artist;
     } catch {

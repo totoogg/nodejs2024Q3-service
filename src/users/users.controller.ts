@@ -23,7 +23,7 @@ export class UsersController {
   @Get()
   @HttpCode(200)
   @Header('Content-Type', 'application/json; charset=utf-8')
-  async getUsers(): Promise<IUser[]> {
+  async getUsers(): Promise<Omit<IUser, 'password'>[]> {
     return await this.usersService.getUsers();
   }
 

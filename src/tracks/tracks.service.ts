@@ -52,6 +52,7 @@ export class TracksService {
           artistId: data.artistId || null,
         },
       });
+
       return track;
     } catch {
       return undefined;
@@ -65,6 +66,31 @@ export class TracksService {
           id,
         },
       });
+
+      const trackFav = await this.prisma.favorites.findUnique({
+        where: {
+          id: 1,
+          AND: {
+            tracks: {
+              has: id,
+            },
+          },
+        },
+      });
+
+      if (trackFav) {
+        await this.prisma.favorites.update({
+          where: {
+            id: 1,
+          },
+          data: {
+            tracks: {
+              set: trackFav.tracks.filter((el) => el !== id),
+            },
+          },
+        });
+      }
+
       return track;
     } catch {
       return undefined;

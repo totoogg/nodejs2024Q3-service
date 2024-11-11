@@ -50,6 +50,7 @@ export class AlbumsService {
           artistId: data.artistId || null,
         },
       });
+
       return album;
     } catch {
       return undefined;
@@ -63,6 +64,31 @@ export class AlbumsService {
           id,
         },
       });
+
+      const albumFav = await this.prisma.favorites.findUnique({
+        where: {
+          id: 1,
+          AND: {
+            albums: {
+              has: id,
+            },
+          },
+        },
+      });
+
+      if (albumFav) {
+        await this.prisma.favorites.update({
+          where: {
+            id: 1,
+          },
+          data: {
+            albums: {
+              set: albumFav.albums.filter((el) => el !== id),
+            },
+          },
+        });
+      }
+
       return album;
     } catch {
       return undefined;
