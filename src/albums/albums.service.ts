@@ -1,24 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { DbService } from 'src/db/db.service';
 import { v4 as uuidv4 } from 'uuid';
 import { IAlbum } from './entities/album.entities';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { PrismaService } from 'src/db/dbPrisma.service';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private db: DbService) {}
+  constructor(private prisma: PrismaService) {}
 
   async getAlbums() {
-    const albums = await this.db.getAlbums();
+    const albums = await this.prisma.album.findMany();
 
     return albums;
   }
 
   async getAlbumById(id: string) {
-    const album = await this.db.getAlbumById(id);
+    try {
+      const album = await this.prisma.album.findUnique({ where: { id } });
 
-    return album;
+      return album;
+    } catch {
+      return undefined;
+    }
   }
 
   async createAlbum(data: CreateAlbumDto) {
@@ -29,43 +33,39 @@ export class AlbumsService {
       year,
       artistId: artistId || null,
     };
-    const album = await this.db.createAlbum(albumData);
+    const album = await this.prisma.album.create({ data: albumData });
 
     return album;
   }
 
   async updateAlbum(id: string, data: UpdateAlbumDto) {
-    const checkAlbum = await this.db.getAlbumById(id);
-
-    if (checkAlbum) {
-      const { name, year, artistId } = data;
-      const albumData = {
-        name,
-        year,
-        artistId: artistId || null,
-      };
-
-      const album = await this.db.updateAlbum(id, albumData);
-
+    try {
+      const album = await this.prisma.album.update({
+        where: {
+          id,
+        },
+        data: {
+          name: data.name,
+          year: data.year,
+          artistId: data.artistId || null,
+        },
+      });
       return album;
+    } catch {
+      return undefined;
     }
-
-    return checkAlbum;
   }
 
   async deleteAlbumById(id: string) {
-    const album = await this.db.getAlbumById(id);
-
-    if (album) {
-      const res = await this.db.deleteAlbum(id);
-
-      await this.db.deleteFavoriteAlbum(id);
-
-      await this.db.deleteAlbumFromTrack(id);
-
-      return res;
+    try {
+      const album = await this.prisma.album.delete({
+        where: {
+          id,
+        },
+      });
+      return album;
+    } catch {
+      return undefined;
     }
-
-    return album;
   }
 }
