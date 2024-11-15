@@ -1,4 +1,4 @@
-FROM node:22.9.0-alpine3.20
+FROM node:16-alpine3.18
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY package*.json .
 
 RUN npm cache clean --force
 
-RUN npm install
+RUN npm install --production
 
 COPY . .
 

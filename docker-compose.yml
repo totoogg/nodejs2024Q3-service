@@ -2,6 +2,7 @@ version: '3.9'
 services:
   backend:
     build: .
+    shm_size: 128mb
     env_file:
       - .env
     ports:
@@ -11,6 +12,7 @@ services:
     restart: always
     volumes:
       - ./src:/app/src
+      - ./logs:/app/logs
 
     networks:
       - hi
@@ -23,7 +25,8 @@ services:
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT_STANDART}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data-99:/var/lib/postgresql/data
+      - postgres-logs-99:/var/log/postgresql
 
     restart: always
 
@@ -31,7 +34,8 @@ services:
       - hi
 
 volumes:
-  postgres-data:
+  postgres-data-99:
+  postgres-logs-99:
 
 
 networks:
