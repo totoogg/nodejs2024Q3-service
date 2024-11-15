@@ -1,19 +1,36 @@
+version: '3.9'
 services:
-  # название сервиса
-  postgres:
-    # образ
-    image: postgres
-    # политика перезапуска
-    restart: on-failure
-    # файл с переменными среды окружения
+  backend:
+    build: .
     env_file:
       - .env
-    # порты
     ports:
-      - 6500:5432
-    # тома для постоянного хранения данных
+      - ${PORT}:${PORT}
+    depends_on:
+      - database
+    restart: always
+
+    networks:
+      - hi
+
+  database:
+    build: ./src/db
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT_STANDART}
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+    restart: always
+
+    networks:
+      - hi
+
 volumes:
   postgres-data:
+
+
+networks:
+  hi: 
+    driver: bridge
