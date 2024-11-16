@@ -15,7 +15,6 @@ services:
     volumes:
       - ./src:/app/src
       - ./logs:/app/logs
-
     networks:
       - hi
 
@@ -29,9 +28,7 @@ services:
     volumes:
       - postgres-data-99:/var/lib/postgresql/data
       - postgres-logs-99:/var/log/postgresql
-
     restart: always
-
     networks:
       - hi
 

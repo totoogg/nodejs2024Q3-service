@@ -17,10 +17,10 @@ git clone https://github.com/totoogg/nodejs2024Q3-service.git
 cd nodejs2024Q3-service
 ```
 
-## Go to the `develop-rest-service-part-1` branch
+## Go to the `develop-rest-service-part-2` branch
 
 ```
-git checkout develop-rest-service-part-1
+git checkout develop-rest-service-part-2
 ```
 
 ## Installing NPM modules
@@ -30,14 +30,29 @@ npm install
 ```
 
 ## Running application
+Install [Docker Desktop](https://www.docker.com/) and run it
+
+In the terminal, enter the command
 
 ```
-npm start
+docker compose up
 ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## Stoping application
+
+```
+docker compose down
+```
+
+## Vulnerabilities scanning
+
+```
+npm run scan:scout
+```
 
 ## Testing
 
