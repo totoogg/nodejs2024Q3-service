@@ -22,7 +22,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "prisma:migrate": "npx prisma migrate dev --name init",
-    "scan:scout": "docker"
+    "scan:scout": "docker scout cves totoogg/database:1.0.0 && docker scout cves totoogg/backend:1.0.0"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.7",
