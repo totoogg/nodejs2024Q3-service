@@ -4,7 +4,7 @@ import { ArtistsModule } from './artists/artists.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TracksModule } from './tracks/tracks.module';
-import { DbService } from './db/db.service';
+import { PrismaService } from './db/dbPrisma.service';
 
 @Global()
 @Module({
@@ -15,7 +15,7 @@ import { DbService } from './db/db.service';
     FavoritesModule,
     TracksModule,
   ],
-  providers: [DbService],
-  exports: [DbService],
+  providers: [PrismaService],
+  exports: [PrismaService],
 })
 export class AppModule {}

@@ -1,100 +1,154 @@
 import { Injectable } from '@nestjs/common';
-import { DbService } from 'src/db/db.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { IUser } from './entities/user.entities';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { PrismaService } from 'src/db/dbPrisma.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private db: DbService) {}
+  constructor(private prisma: PrismaService) {}
 
   async getUsers() {
-    const users = await this.db.getUsers();
-    const res = users.map((el) => {
-      const userClone = structuredClone(el);
-
-      delete userClone.password;
-
-      return userClone;
+    const users = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        login: true,
+        version: true,
+        updatedAt: true,
+        createdAt: true,
+      },
     });
 
-    return res;
+    return users.map((el) => ({
+      ...el,
+      version: Number(el.version),
+      createdAt: Number(el.createdAt),
+      updatedAt: Number(el.updatedAt),
+    }));
   }
 
   async getUserById(id: string) {
-    const user = await this.db.getUserById(id);
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          login: true,
+          version: true,
+          updatedAt: true,
+          createdAt: true,
+        },
+      });
 
-    if (user) {
-      const userClone = structuredClone(user);
-
-      delete userClone.password;
-
-      return userClone;
+      return {
+        ...user,
+        version: Number(user.version),
+        createdAt: Number(user.createdAt),
+        updatedAt: Number(user.updatedAt),
+      };
+    } catch {
+      return undefined;
     }
-
-    return user;
   }
 
   async createUser(data: CreateUserDto) {
     const { login, password } = data;
-    const checkUser = await this.db.getUserByLogin(login);
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { login },
+      });
 
-    if (!checkUser) {
-      const time = new Date().getTime();
-      const userData: IUser = {
-        id: uuidv4(),
-        login,
-        password,
-        version: 1,
-        createdAt: time,
-        updatedAt: time,
-      };
-      const user = await this.db.createUser(userData);
-      const userClone = structuredClone(user);
+      if (!user) {
+        const time = new Date().getTime();
+        const userData: IUser = {
+          id: uuidv4(),
+          login,
+          password,
+          version: 1,
+          createdAt: time,
+          updatedAt: time,
+        };
 
-      delete userClone.password;
+        const res = await this.prisma.user.create({
+          data: userData,
+          select: {
+            id: true,
+            login: true,
+            version: true,
+            updatedAt: true,
+            createdAt: true,
+          },
+        });
 
-      return userClone;
+        return {
+          ...res,
+          version: Number(res.version),
+          createdAt: Number(res.createdAt),
+          updatedAt: Number(res.updatedAt),
+        };
+      }
+
+      return null;
+    } catch {
+      return undefined;
     }
-
-    return null;
   }
 
   async updateUser(id: string, data: UpdatePasswordDto) {
-    const checkUser = await this.db.getUserById(id);
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+      });
 
-    if (checkUser) {
-      if (checkUser.password !== data.oldPassword) {
-        return '403';
+      if (user) {
+        if (user.password !== data.oldPassword) {
+          return '403';
+        }
+
+        const res = await this.prisma.user.update({
+          where: {
+            id,
+          },
+          data: {
+            password: data.newPassword,
+            version: Number(user.version) + 1,
+            updatedAt: new Date().getTime(),
+          },
+          select: {
+            id: true,
+            login: true,
+            version: true,
+            updatedAt: true,
+            createdAt: true,
+          },
+        });
+
+        return {
+          ...res,
+          version: Number(res.version),
+          createdAt: Number(res.createdAt),
+          updatedAt: Number(res.updatedAt),
+        };
       }
 
-      const updateData = {
-        password: data.newPassword,
-        version: checkUser.version + 1,
-        updatedAt: new Date().getTime(),
-      };
-
-      const user = await this.db.updateUser(id, updateData);
-      const userClone = structuredClone(user);
-
-      delete userClone.password;
-
-      return userClone;
+      return '404';
+    } catch {
+      return undefined;
     }
-
-    return '404';
   }
 
   async deleteUserById(id: string) {
-    const user = await this.db.getUserById(id);
+    try {
+      const user = await this.prisma.user.delete({
+        where: {
+          id,
+        },
+      });
 
-    if (user) {
-      const res = await this.db.deleteUser(id);
-
-      return res;
+      return user;
+    } catch {
+      return undefined;
     }
-
-    return user;
   }
 }

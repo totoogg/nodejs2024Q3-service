@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  backend:
+    build: .
+    image: totoogg/backend
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL_DOCKER}
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - database
+    restart: always
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    networks:
+      - hi
+
+  database:
+    build: ./src/db
+    image: totoogg/database
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT_STANDART}
+    volumes:
+      - postgres-data-99:/var/lib/postgresql/data
+      - postgres-logs-99:/var/log/postgresql
+    restart: always
+    networks:
+      - hi
+
+volumes:
+  postgres-data-99:
+  postgres-logs-99:
+
+
+networks:
+  hi: 
+    driver: bridge
