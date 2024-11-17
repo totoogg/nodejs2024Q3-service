@@ -5,6 +5,7 @@ import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TracksModule } from './tracks/tracks.module';
 import { PrismaService } from './db/dbPrisma.service';
+import { CustomLogger } from './logger/logger.service';
 
 @Global()
 @Module({
@@ -15,7 +16,7 @@ import { PrismaService } from './db/dbPrisma.service';
     FavoritesModule,
     TracksModule,
   ],
-  providers: [PrismaService],
-  exports: [PrismaService],
+  providers: [PrismaService, CustomLogger],
+  exports: [PrismaService, CustomLogger],
 })
 export class AppModule {}

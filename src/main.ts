@@ -6,6 +6,7 @@ import { join } from 'path';
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import 'dotenv/config';
+import { CustomLogger } from './logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,6 +26,10 @@ async function bootstrap() {
     console.error(error);
   }
 
+  const customLogger = new CustomLogger('Bootstrap');
+
   await app.listen(PORT);
+
+  customLogger.log(`Application is running on ${PORT} port`);
 }
 bootstrap();
