@@ -6,6 +6,8 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { TracksModule } from './tracks/tracks.module';
 import { PrismaService } from './db/dbPrisma.service';
 import { CustomLogger } from './logger/logger.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './logger/logger.interceptor';
 
 @Global()
 @Module({
@@ -16,7 +18,14 @@ import { CustomLogger } from './logger/logger.service';
     FavoritesModule,
     TracksModule,
   ],
-  providers: [PrismaService, CustomLogger],
+  providers: [
+    PrismaService,
+    CustomLogger,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
   exports: [PrismaService, CustomLogger],
 })
 export class AppModule {}
