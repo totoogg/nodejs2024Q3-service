@@ -4,6 +4,8 @@ import {
   ConsoleLogger,
   LogLevel,
 } from '@nestjs/common';
+import * as path from 'node:path';
+import * as fs from 'node:fs/promises';
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger implements LoggerService {
@@ -25,44 +27,102 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
         ? Number(process.env.LOG_LEVEL)
         : 2;
     this.fileSize =
-      process.env.FILE_LOG_SIZE && Number(process.env.FILE_LOG_SIZE) >= 0
+      (process.env.FILE_LOG_SIZE && Number(process.env.FILE_LOG_SIZE) >= 0
         ? Number(process.env.FILE_LOG_SIZE)
-        : 20;
+        : 20) * 1000;
 
     this.setLogLevels(this.logLevels.slice(0, this.logLevel + 1));
   }
 
-  log(message: string) {
-    this.textForRecord('LOG', message);
+  async log(message: string) {
+    if (!this.isLevelEnabled('log')) return;
+
+    await this.textForRecord('LOG', message);
 
     super.log(message);
   }
 
-  error(message: string) {
-    this.textForRecord('ERROR', message);
+  async error(message: string) {
+    if (!this.isLevelEnabled('error')) return;
+
+    await this.textForRecord('ERROR', message);
 
     super.error(message);
   }
 
-  warn(message: string) {
-    this.textForRecord('WARN', message);
+  async warn(message: string) {
+    if (!this.isLevelEnabled('warn')) return;
+
+    await this.textForRecord('WARN', message);
 
     super.warn(message);
   }
 
-  debug(message: string) {
-    this.textForRecord('DEBUG', message);
+  async debug(message: string) {
+    if (!this.isLevelEnabled('debug')) return;
+
+    await this.textForRecord('DEBUG', message);
 
     super.debug(message);
   }
 
-  verbose(message: string) {
-    this.textForRecord('VERBOSE', message);
+  async verbose(message: string) {
+    if (!this.isLevelEnabled('verbose')) return;
+
+    await this.textForRecord('VERBOSE', message);
 
     super.verbose(message);
   }
 
-  private textForRecord(level: string, text: string) {
-    console.log(`${this.getTimestamp()} ${level} ${text}`);
+  private async textForRecord(level: string, text: string) {
+    const message = `${this.getTimestamp()} ${level} ${text}\n`;
+
+    try {
+      await fs.access(path.resolve('logs'));
+    } catch {
+      await fs.mkdir(path.resolve('logs'), {
+        recursive: true,
+      });
+    }
+
+    const dir = await fs.readdir(path.resolve('logs'));
+
+    if (level === 'ERROR') {
+      await this.recordFile('error', message, dir);
+    } else {
+      await this.recordFile('log', message, dir);
+    }
+  }
+
+  private async recordFile(level: string, text: string, dir: string[]) {
+    const fileName = dir
+      .filter((el) => {
+        const regexp = new RegExp(`${level.toLowerCase()}\\d*.txt`, 'gim');
+        return regexp.test(el);
+      })
+      .sort((a, b) => a.localeCompare(b))
+      .at(-1);
+
+    if (fileName) {
+      const size = (await fs.stat(path.resolve('logs', fileName))).size;
+
+      if (size < this.fileSize) {
+        await fs.appendFile(path.resolve('logs', fileName), text);
+      } else {
+        const count = Number(
+          fileName
+            .split('')
+            .map((el) => Number(el))
+            .filter((el) => el)
+            .join(''),
+        );
+        await fs.writeFile(
+          path.resolve('logs', `${level}${count + 1}.txt`),
+          text,
+        );
+      }
+    } else {
+      await fs.writeFile(path.resolve('logs', level + '1.txt'), text);
+    }
   }
 }

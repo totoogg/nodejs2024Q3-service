@@ -10,7 +10,7 @@ import { CustomLogger } from './logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true,
+    logger: new CustomLogger(),
   });
   const PORT =
     process.env.PORT && Number(process.env.PORT) >= 0
@@ -31,18 +31,18 @@ async function bootstrap() {
     console.error(error);
   }
 
-  app.useLogger(app.get(CustomLogger));
+  const log = app.get(CustomLogger);
 
-  const customLogger = new CustomLogger();
+  app.useLogger(log);
 
-  await app.listen(PORT);
+  await app.listen(PORT, async () => {
+    log.log(`Application is running on ${PORT} port`);
+  });
 
-  customLogger.error(`Error logging level set`);
-  customLogger.warn(`Warn logging level set`);
-  customLogger.log(`Log logging level set`);
-  customLogger.debug(`Debug logging level set`);
-  customLogger.verbose(`Verbose logging level set`);
-
-  customLogger.log(`Application is running on ${PORT} port`);
+  log.error('error logger set');
+  log.warn('warn logger set');
+  log.log('log logger set');
+  log.verbose('verbose logger set');
+  log.debug('debug logger set');
 }
 bootstrap();
