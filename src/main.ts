@@ -42,7 +42,23 @@ async function bootstrap() {
   log.error('error logger set');
   log.warn('warn logger set');
   log.log('log logger set');
-  log.verbose('verbose logger set');
   log.debug('debug logger set');
+  log.verbose('verbose logger set');
+
+  process.on('uncaughtException', (error, origin) => {
+    log.error(`Captured ${origin} error: ${error.message}`);
+  });
+
+  process.on('unhandledRejection', async (reason: Error) => {
+    log.error(`Unhandled rejection detected: ${reason.message}`);
+  });
+
+  setTimeout(() => {
+    throw new Error('Oops! Exception');
+  }, 500);
+
+  setTimeout(() => {
+    Promise.reject(new Error('Oops! Rejection'));
+  }, 500);
 }
 bootstrap();
