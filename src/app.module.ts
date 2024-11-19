@@ -9,6 +9,7 @@ import { CustomLogger } from './logger/logger.service';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logger/logger.interceptor';
 import { AllExceptionsFilter } from './logger/allExceptionsFilter.';
+import { AuthModule } from './auth/auth.module';
 
 @Global()
 @Module({
@@ -18,6 +19,7 @@ import { AllExceptionsFilter } from './logger/allExceptionsFilter.';
     AlbumsModule,
     FavoritesModule,
     TracksModule,
+    AuthModule,
   ],
   providers: [
     PrismaService,

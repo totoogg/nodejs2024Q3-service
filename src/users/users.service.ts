@@ -52,6 +52,25 @@ export class UsersService {
     }
   }
 
+  async getUserByLogin(login: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { login },
+      });
+
+      if (!user) return user;
+
+      return {
+        ...user,
+        version: Number(user.version),
+        createdAt: Number(user.createdAt),
+        updatedAt: Number(user.updatedAt),
+      };
+    } catch {
+      return undefined;
+    }
+  }
+
   async createUser(data: CreateUserDto) {
     const { login, password } = data;
     try {
