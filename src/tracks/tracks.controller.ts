@@ -37,7 +37,10 @@ export class TracksController {
     const track = await this.tracksService.getTrackById(id);
 
     if (!track) {
-      throw new HttpException(`Track with id ${id} does not exist`, 404);
+      throw new HttpException(
+        { message: [`Track with id ${id} does not exist`] },
+        404,
+      );
     }
 
     return track;
@@ -63,7 +66,10 @@ export class TracksController {
     const track = await this.tracksService.updateTrack(id, postData);
 
     if (!track) {
-      throw new HttpException(`Track with id ${id} does not exist`, 404);
+      throw new HttpException(
+        { message: [`Track with id ${id} does not exist`] },
+        404,
+      );
     }
 
     return track;
@@ -78,7 +84,10 @@ export class TracksController {
     const track = await this.tracksService.deleteTrackById(id);
 
     if (!track) {
-      throw new HttpException(`Track with id ${id} does not exist`, 404);
+      throw new HttpException(
+        { message: [`Track with id ${id} does not exist`] },
+        404,
+      );
     }
   }
 }

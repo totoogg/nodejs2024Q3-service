@@ -25,9 +25,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const path = httpAdapter.getRequestUrl(ctx.getRequest());
     const message =
       httpStatus !== HttpStatus.INTERNAL_SERVER_ERROR
-        ? exception.message
+        ? (exception.getResponse() as { message: string[] }).message.join(', ')
         : 'The server encountered an internal error or misconfiguration and was unable to complete your request';
-
     const responseBody = {
       statusCode: httpStatus,
       message,

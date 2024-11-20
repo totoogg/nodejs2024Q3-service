@@ -37,7 +37,10 @@ export class AlbumsController {
     const album = await this.albumsService.getAlbumById(id);
 
     if (!album) {
-      throw new HttpException(`Album with id ${id} does not exist`, 404);
+      throw new HttpException(
+        { message: [`Album with id ${id} does not exist`] },
+        404,
+      );
     }
 
     return album;
@@ -63,7 +66,10 @@ export class AlbumsController {
     const album = await this.albumsService.updateAlbum(id, postData);
 
     if (!album) {
-      throw new HttpException(`Album with id ${id} does not exist`, 404);
+      throw new HttpException(
+        { message: [`Album with id ${id} does not exist`] },
+        404,
+      );
     }
 
     return album;
@@ -78,7 +84,10 @@ export class AlbumsController {
     const album = await this.albumsService.deleteAlbumById(id);
 
     if (!album) {
-      throw new HttpException(`Album with id ${id} does not exist`, 404);
+      throw new HttpException(
+        { message: [`Album with id ${id} does not exist`] },
+        404,
+      );
     }
   }
 }

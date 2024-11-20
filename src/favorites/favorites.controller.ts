@@ -33,7 +33,10 @@ export class FavoritesController {
     const track = await this.favoritesService.addTrack(id);
 
     if (!track) {
-      throw new HttpException(`Track with id ${id} does not exist`, 422);
+      throw new HttpException(
+        { message: [`Track with id ${id} does not exist`] },
+        422,
+      );
     }
 
     return track;
@@ -48,7 +51,10 @@ export class FavoritesController {
     const track = await this.favoritesService.deleteTrack(id);
 
     if (!track) {
-      throw new HttpException(`Track with id ${id} does not favorite`, 404);
+      throw new HttpException(
+        { message: [`Track with id ${id} does not favorite`] },
+        404,
+      );
     }
   }
 
@@ -62,7 +68,10 @@ export class FavoritesController {
     const album = await this.favoritesService.addAlbum(id);
 
     if (!album) {
-      throw new HttpException(`Album with id ${id} does not exist`, 422);
+      throw new HttpException(
+        { message: [`Album with id ${id} does not exist`] },
+        422,
+      );
     }
 
     return album;
@@ -77,7 +86,10 @@ export class FavoritesController {
     const album = await this.favoritesService.deleteAlbum(id);
 
     if (!album) {
-      throw new HttpException(`Album with id ${id} does not favorite`, 404);
+      throw new HttpException(
+        { message: [`Album with id ${id} does not favorite`] },
+        404,
+      );
     }
   }
 
@@ -91,7 +103,10 @@ export class FavoritesController {
     const artist = await this.favoritesService.addArtist(id);
 
     if (!artist) {
-      throw new HttpException(`Artist with id ${id} does not exist`, 422);
+      throw new HttpException(
+        { message: [`Artist with id ${id} does not exist`] },
+        422,
+      );
     }
 
     return artist;
@@ -106,7 +121,10 @@ export class FavoritesController {
     const artist = await this.favoritesService.deleteArtist(id);
 
     if (!artist) {
-      throw new HttpException(`Artist with id ${id} does not favorite`, 404);
+      throw new HttpException(
+        { message: [`Artist with id ${id} does not favorite`] },
+        404,
+      );
     }
   }
 }
