@@ -97,10 +97,24 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
   private async recordFile(level: string, text: string, dir: string[]) {
     const fileName = dir
       .filter((el) => {
-        const regexp = new RegExp(`${level.toLowerCase()}\\d*.txt`, 'gim');
+        const regexp = new RegExp(`${level.toLowerCase()}\\d\*.txt`, 'gim');
         return regexp.test(el);
       })
-      .sort((a, b) => a.localeCompare(b))
+      .sort(
+        (a, b) =>
+          Number(
+            a
+              .split('')
+              .filter((el) => Number(el) >= 0)
+              .join(''),
+          ) -
+          Number(
+            b
+              .split('')
+              .filter((el) => Number(el) >= 0)
+              .join(''),
+          ),
+      )
       .at(-1);
 
     if (fileName) {
@@ -112,8 +126,7 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
         const count = Number(
           fileName
             .split('')
-            .map((el) => Number(el))
-            .filter((el) => el)
+            .filter((el) => Number(el) >= 0)
             .join(''),
         );
         await fs.writeFile(

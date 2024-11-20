@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { tap } from 'rxjs';
 import { CustomLogger } from './logger.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   constructor(private customLogger: CustomLogger) {}
-  intercept(context: ExecutionContext, next: CallHandler) {
+  async intercept(context: ExecutionContext, next: CallHandler) {
     const req = context.switchToHttp().getRequest();
     const method = req.method;
     const url = req.url;
@@ -25,7 +26,9 @@ export class LoggingInterceptor implements NestInterceptor {
           ? ', query: ' + JSON.stringify(query)
           : ''
       }${
-        Object.keys(body).length !== 0 ? ', body: ' + JSON.stringify(body) : ''
+        Object.keys(body).length !== 0
+          ? ', body: ' + JSON.stringify(await this.formatBody(body))
+          : ''
       }}`,
     );
 
@@ -40,5 +43,16 @@ export class LoggingInterceptor implements NestInterceptor {
         );
       }),
     );
+  }
+
+  private async formatBody(body: { password: string }) {
+    const result = { ...body };
+    const salt = Number(process.env.CRYPT_SALT || '10');
+
+    if ('password' in result) {
+      result.password = await bcrypt.hash(result.password, salt);
+    }
+
+    return result;
   }
 }

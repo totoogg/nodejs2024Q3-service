@@ -19,6 +19,10 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  const log = app.get(CustomLogger);
+
+  app.useLogger(log);
+
   try {
     const fileYaml = await readFile(
       join(__dirname, '..', 'doc', 'api.yaml'),
@@ -28,12 +32,8 @@ async function bootstrap() {
 
     SwaggerModule.setup('doc', app, config);
   } catch (error) {
-    console.error(error);
+    log.error(error);
   }
-
-  const log = app.get(CustomLogger);
-
-  app.useLogger(log);
 
   await app.listen(PORT, async () => {
     log.log(`Application is running on ${PORT} port`);
