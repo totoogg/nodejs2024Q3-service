@@ -37,10 +37,7 @@ export class UsersController {
     const user = await this.usersService.getUserById(id);
 
     if (!user) {
-      throw new HttpException(
-        { message: [`User with id ${id} does not exist`] },
-        404,
-      );
+      throw new HttpException(`User with id ${id} does not exist`, 404);
     }
 
     return user;
@@ -53,10 +50,7 @@ export class UsersController {
     const user = await this.usersService.createUser(postData);
 
     if (!user) {
-      throw new HttpException(
-        { message: [`User with login ${postData.login} exists`] },
-        404,
-      );
+      throw new HttpException(`User with login ${postData.login} exists`, 404);
     }
 
     return user;
@@ -73,14 +67,11 @@ export class UsersController {
     const user = await this.usersService.updateUser(id, postData);
 
     if (user === '404') {
-      throw new HttpException(
-        { message: [`User with id ${id} does not exist`] },
-        404,
-      );
+      throw new HttpException(`User with id ${id} does not exist`, 404);
     }
 
     if (user === '403') {
-      throw new HttpException({ message: [`Incorrect old password`] }, 403);
+      throw new HttpException(`Incorrect old password`, 403);
     }
 
     return user;
@@ -95,10 +86,7 @@ export class UsersController {
     const user = await this.usersService.deleteUserById(id);
 
     if (!user) {
-      throw new HttpException(
-        { message: [`User with id ${id} does not exist`] },
-        404,
-      );
+      throw new HttpException(`User with id ${id} does not exist`, 404);
     }
   }
 }

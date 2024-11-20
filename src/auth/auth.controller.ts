@@ -23,10 +23,7 @@ export class AuthController {
     );
 
     if (!user) {
-      throw new HttpException(
-        { message: [`User with login ${postData.login} exists`] },
-        404,
-      );
+      throw new HttpException(`User with login ${postData.login} exists`, 404);
     }
 
     return user;
@@ -41,10 +38,7 @@ export class AuthController {
     );
 
     if (!tokens) {
-      throw new HttpException(
-        { message: [`Login or password is incorrect`] },
-        403,
-      );
+      throw new HttpException(`Login or password is incorrect`, 403);
     }
 
     return tokens;
@@ -55,11 +49,7 @@ export class AuthController {
   async refresh(@Body() postData: RefreshTokenDto) {
     if (!postData.refreshToken || typeof postData.refreshToken !== 'string') {
       throw new HttpException(
-        {
-          message: [
-            `RefreshToken must be a string, refreshToken should not be empty`,
-          ],
-        },
+        `RefreshToken must be a string, refreshToken should not be empty`,
         401,
       );
     }
@@ -67,17 +57,11 @@ export class AuthController {
     const tokens = await this.authService.refresh(postData.refreshToken);
 
     if (!tokens) {
-      throw new HttpException(
-        { message: [`Refresh token is invalid or expired`] },
-        403,
-      );
+      throw new HttpException(`Refresh token is invalid or expired`, 403);
     }
 
     if (tokens?.error === '404') {
-      throw new HttpException(
-        { message: [`User with id ${tokens.id} does not exist`] },
-        404,
-      );
+      throw new HttpException(`User with id ${tokens.id} does not exist`, 404);
     }
 
     return tokens;

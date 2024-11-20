@@ -50,7 +50,7 @@ export class LoggingInterceptor implements NestInterceptor {
     const salt = Number(process.env.CRYPT_SALT || '10');
 
     if ('password' in result) {
-      result.password = await bcrypt.hash(result.password, salt);
+      result.password = await bcrypt.hash(String(result.password), salt);
     }
 
     return result;

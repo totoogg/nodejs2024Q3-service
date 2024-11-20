@@ -25,7 +25,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const path = httpAdapter.getRequestUrl(ctx.getRequest());
     const message =
       httpStatus !== HttpStatus.INTERNAL_SERVER_ERROR
-        ? (exception.getResponse() as { message: string[] }).message.join(', ')
+        ? this.formatMessage(exception.getResponse() as { message: string[] })
         : 'The server encountered an internal error or misconfiguration and was unable to complete your request';
     const responseBody = {
       statusCode: httpStatus,
@@ -41,5 +41,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
     );
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+  }
+
+  private formatMessage(message: { message: string[] }) {
+    if (
+      typeof message !== 'string' &&
+      'message' in message &&
+      Array.isArray(message.message)
+    ) {
+      return message.message.join(', ');
+    }
+
+    return message;
   }
 }

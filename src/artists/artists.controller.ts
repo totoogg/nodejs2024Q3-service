@@ -37,10 +37,7 @@ export class ArtistsController {
     const artist = await this.artistsService.getArtistById(id);
 
     if (!artist) {
-      throw new HttpException(
-        { message: [`Artist with id ${id} does not exist`] },
-        404,
-      );
+      throw new HttpException(`Artist with id ${id} does not exist`, 404);
     }
 
     return artist;
@@ -66,10 +63,7 @@ export class ArtistsController {
     const artist = await this.artistsService.updateArtist(id, postData);
 
     if (!artist) {
-      throw new HttpException(
-        { message: [`Artist with id ${id} does not exist`] },
-        404,
-      );
+      throw new HttpException(`Artist with id ${id} does not exist`, 404);
     }
 
     return artist;
@@ -84,10 +78,7 @@ export class ArtistsController {
     const artist = await this.artistsService.deleteArtistById(id);
 
     if (!artist) {
-      throw new HttpException(
-        { message: [`Artist with id ${id} does not exist`] },
-        404,
-      );
+      throw new HttpException(`Artist with id ${id} does not exist`, 404);
     }
   }
 }

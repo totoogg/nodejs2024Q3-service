@@ -1,8 +1,8 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
     }
 
     if (!token) {
-      throw new UnauthorizedException();
+      throw new HttpException(`User is not authorized`, 401);
     }
 
     try {
@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
 
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException();
+      throw new HttpException(`User is not authorized`, 401);
     }
     return true;
   }

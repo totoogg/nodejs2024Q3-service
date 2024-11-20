@@ -54,10 +54,13 @@ export class AuthService {
       }
 
       return {
-        accessToken: await this.jwtService.signAsync(payload, {
-          secret: process.env.JWT_SECRET_KEY || 'secret123123',
-          expiresIn: process.env.TOKEN_EXPIRE_TIME || '1h',
-        }),
+        accessToken: await this.jwtService.signAsync(
+          { sub: payload.sub, username: payload.username },
+          {
+            secret: process.env.JWT_SECRET_KEY || 'secret123123',
+            expiresIn: process.env.TOKEN_EXPIRE_TIME || '1h',
+          },
+        ),
         refreshToken: await this.jwtService.signAsync(payload, {
           secret: process.env.JWT_SECRET_REFRESH_KEY || 'secret123123',
           expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h',
