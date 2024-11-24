@@ -1,4 +1,5 @@
 import { Global, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { ArtistsModule } from './artists/artists.module';
 import { AlbumsModule } from './albums/albums.module';
@@ -20,6 +21,9 @@ import { AuthModule } from './auth/auth.module';
     FavoritesModule,
     TracksModule,
     AuthModule,
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+    }),
   ],
   providers: [
     PrismaService,

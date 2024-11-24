@@ -24,7 +24,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT_STANDART}
+      - ${POSTGRES_PORT}:${POSTGRES_PORT_STANDARD}
     volumes:
       - postgres-data-99:/var/lib/postgresql/data
       - postgres-logs-99:/var/log/postgresql

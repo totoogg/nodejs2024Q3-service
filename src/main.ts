@@ -1,12 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { readFile } from 'fs/promises';
-import * as yaml from 'js-yaml';
 import { join } from 'path';
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import 'dotenv/config';
 import { CustomLogger } from './logger/logger.service';
+import * as yaml from 'js-yaml';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -53,12 +52,17 @@ async function bootstrap() {
     log.error(`Unhandled rejection detected: ${reason.message}`);
   });
 
+  //To check for uncaughtException and unhandledRejection errors, uncomment the code below
+
+  /* 
   setTimeout(() => {
     throw new Error('Oops! Exception');
   }, 500);
 
   setTimeout(() => {
     Promise.reject(new Error('Oops! Rejection'));
-  }, 500);
+  }, 500); 
+  */
 }
+
 bootstrap();
