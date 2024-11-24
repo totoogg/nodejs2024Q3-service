@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { IUser } from './entities/user.entities';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { PrismaService } from 'src/db/dbPrisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -52,6 +53,25 @@ export class UsersService {
     }
   }
 
+  async getUserByLogin(login: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { login },
+      });
+
+      if (!user) return user;
+
+      return {
+        ...user,
+        version: Number(user.version),
+        createdAt: Number(user.createdAt),
+        updatedAt: Number(user.updatedAt),
+      };
+    } catch {
+      return undefined;
+    }
+  }
+
   async createUser(data: CreateUserDto) {
     const { login, password } = data;
     try {
@@ -61,10 +81,11 @@ export class UsersService {
 
       if (!user) {
         const time = new Date().getTime();
+        const salt = Number(process.env.CRYPT_SALT || '10');
         const userData: IUser = {
           id: uuidv4(),
           login,
-          password,
+          password: await bcrypt.hash(password, salt),
           version: 1,
           createdAt: time,
           updatedAt: time,
@@ -102,16 +123,17 @@ export class UsersService {
       });
 
       if (user) {
-        if (user.password !== data.oldPassword) {
+        if (!(await bcrypt.compare(data.oldPassword, user.password))) {
           return '403';
         }
 
+        const salt = Number(process.env.CRYPT_SALT || '10');
         const res = await this.prisma.user.update({
           where: {
             id,
           },
           data: {
-            password: data.newPassword,
+            password: await bcrypt.hash(data.newPassword, salt),
             version: Number(user.version) + 1,
             updatedAt: new Date().getTime(),
           },
